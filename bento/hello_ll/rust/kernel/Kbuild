@@ -1,0 +1,20 @@
+obj-m := hello_ll.o
+hello_ll-objs := src/module.o hello_ll.rust.o 
+
+
+KBUILD_EXTRA_SYMBOLS = $(src)/../../../bentofs/Module.symvers
+
+CARGO ?= cargo
+
+# $(src)/target/x86_64-unknown-none-linuxkernel/release/libhello_ll.a: $(src)/Cargo.toml $(wildcard $(src)/src/*.rs)
+# 	cd $(src); RUSTFLAGS="-C code-model=kernel -C relocation-model=static" env -u MAKE -u MAKEFLAGS $(CARGO) build -Z build-std=core,alloc --release --target=x86_64-unknown-none-linuxkernel 
+
+# %.rust.o: target/x86_64-unknown-none-linuxkernel/release/lib%.a
+# 	$(LD) -r -o $@ --whole-archive $<
+
+%.rust.o: $(src)/Cargo.toml $(wildcard $(src)/src/*.rs)
+	cd $(src); cargo rustc --release -Z build-std=core,alloc --target=x86_64-unknown-none-linuxkernel
+	mkdir -p rust_objs
+	cd rust_objs && ar x $(src)/target/x86_64-unknown-none-linuxkernel/release/libhello_ll.a
+	ld -r -o %.rust.o rust_objs/*.o
+

@@ -1,0 +1,21 @@
+[package]
+name = "hello_ll"
+version = "0.1.0"
+authors = ["Danyang Zhuo <danyangz@cs.washington.edu>",
+           "Kaiyuan Zhang <kaiyuanz@cs.washington.edu>",
+           "Samantha Miller <sm237@cs.washington.edu>"]
+edition = "2018"
+rustflags = ["-C code-model=kernel -C relocation-model=static"]
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+bento = {path = "../../../bento/rust" }
+rlibc = "1.0"
+arr_macro = "0.1.0"
+
+[dependencies.serde]
+version = "*"
+default-features = false
+features = ["alloc", "derive"]
+

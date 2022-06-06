@@ -1,0 +1,1 @@
+cmd_/root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/dummy.mod := { echo  /root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/dummy.o;  echo; } > /root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/dummy.mod

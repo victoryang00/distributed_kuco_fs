@@ -1,0 +1,9 @@
+/target
+Cargo.lock
+.idea
+target
+badfs-playground
+get
+trace*
+out*
+*log

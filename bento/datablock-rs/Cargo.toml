@@ -1,0 +1,7 @@
+[workspace]
+
+members = [
+    "datablock",
+    "datablock_derive",
+    "datablock_test",
+]

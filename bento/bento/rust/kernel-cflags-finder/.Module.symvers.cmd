@@ -1,0 +1,1 @@
+cmd_/root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/Module.symvers := sed 's/\.ko$$/\.o/' /root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/modules.order | scripts/mod/modpost -m -a  -o /root/distributed_kuco_fs/bento/bento/rust/kernel-cflags-finder/Module.symvers -e -i Module.symvers   -T -

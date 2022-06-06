@@ -1,0 +1,4 @@
+[workspace]
+members = ["badfs-server", "badfs-client", "badfs-intercept", "badfs-common", "badfs-playground", "badfs-fuzz"]
+[profile.release]
+debug = true
