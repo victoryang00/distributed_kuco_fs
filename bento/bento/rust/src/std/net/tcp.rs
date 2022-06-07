@@ -202,15 +202,18 @@ impl TcpStream {
         let mut nodelay = false;
         let mut optlen = 0;
         unsafe {
-            let ret = ffi::kernel_getsockopt(
-                self.inner as *mut raw::c_void,
-                c::IPPROTO_TCP as i32,
-                c::TCP_NODELAY as i32,
-                &mut nodelay as *mut bool as *mut raw::c_char,
-                &mut optlen,
-            );
-            if ret != 0 {
-                return Err(io::Error::from_raw_os_error(ret));
+            // let ret = kernel_getsockopt(
+            //     self.inner as *mut raw::c_void,
+            //     c::IPPROTO_TCP as i32,
+            //     c::TCP_NODELAY as i32,
+            //     &mut nodelay as *mut bool as *mut raw::c_char,
+            //     &mut optlen,
+            // );
+            // if ret != 0 {
+            //     return Err(io::Error::from_raw_os_error(ret));
+            // }
+            unsafe {
+                ffi::sock_reset_flag(sock, nodelay);
             }
             return Ok(nodelay);
         }
@@ -236,7 +239,7 @@ impl TcpStream {
         let mut ttl = 0;
         let mut optlen = 0;
         unsafe {
-            let ret = ffi::kernel_getsockopt(
+            let ret = kernel_getsockopt(
                 self.inner as *mut raw::c_void,
                 c::IPPROTO_IP as i32,
                 c::IP_TTL as i32,
@@ -273,7 +276,7 @@ impl TcpStream {
         };
         let mut optlen = 0;
         unsafe {
-            let ret = ffi::kernel_getsockopt(
+            let ret = kernel_getsockopt(
                 self.inner as *mut raw::c_void,
                 0xffff as i32,
                 0x1012 as i32,
@@ -337,16 +340,16 @@ impl TcpStream {
         };
         let mut optlen = 0;
         unsafe {
-            // let ret = ffi::kernel_getsockopt(
-            //     self.inner as *mut raw::c_void,
-            //     0xffff as i32,
-            //     0x0012 as i32,
-            //     &mut write_timeout as *mut timeval as *mut raw::c_char,
-            //     &mut optlen,
-            // );
-            // if ret != 0 {
-            //     return Err(io::Error::from_raw_os_error(ret));
-            // }
+            let ret = kernel_getsockopt(
+                self.inner as *mut raw::c_void,
+                0xffff as i32,
+                0x0012 as i32,
+                &mut write_timeout as *mut timeval as *mut raw::c_char,
+                &mut optlen,
+            );
+            if ret != 0 {
+                return Err(io::Error::from_raw_os_error(ret));
+            }
             if write_timeout.tv_sec == 0 && write_timeout.tv_usec == 0 {
                 return Ok(None);
             } else {
@@ -449,16 +452,16 @@ impl TcpStream {
         let mut sk_err: isize = 0;
         let mut optlen = 0;
         unsafe {
-            // let ret = ffi::kernel_getsockopt(
-            //     self.inner as *mut raw::c_void,
-            //     c::SOL_SOCKET as i32,
-            //     c::SO_ERROR as i32,
-            //     &mut sk_err as *mut isize as *mut raw::c_char,
-            //     &mut optlen,
-            // );
-            // if ret != 0 {
-            //     return Err(io::Error::from_raw_os_error(ret));
-            // }
+            let ret = kernel_getsockopt(
+                self.inner as *mut raw::c_void,
+                c::SOL_SOCKET as i32,
+                c::SO_ERROR as i32,
+                &mut sk_err as *mut isize as *mut raw::c_char,
+                &mut optlen,
+            );
+            if ret != 0 {
+                return Err(io::Error::from_raw_os_error(ret));
+            }
             
             if sk_err == 0 {
                 return Ok(None);
@@ -754,7 +757,7 @@ impl TcpListener {
         let mut ttl = 0;
         let mut optlen = 0;
         unsafe {
-            let ret = ffi::kernel_getsockopt(
+            let ret = kernel_getsockopt(
                 self.inner as *mut raw::c_void,
                 c::IPPROTO_IP as i32,
                 c::IP_TTL as i32,
@@ -788,7 +791,7 @@ impl TcpListener {
         let mut sk_err: isize = 0;
         let mut optlen = 0;
         unsafe {
-            let ret = ffi::kernel_getsockopt(
+            let ret = kernel_getsockopt(
                 self.inner as *mut raw::c_void,
                 c::SOL_SOCKET as i32,
                 c::SO_ERROR as i32,

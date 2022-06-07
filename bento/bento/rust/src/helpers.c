@@ -22,10 +22,10 @@
 #include <linux/timekeeping.h>
 #include <linux/time.h>
 
-struct timespec {
-    unsigned long tv_sec;
-    unsigned tv_nsec;
-};
+// struct timespec {
+//     unsigned long tv_sec;
+//     unsigned tv_nsec;
+// };
 void
 wait_a_bit(void) {
 	set_current_state(TASK_INTERRUPTIBLE);
@@ -227,9 +227,9 @@ void rs_jbd2_journal_set_async_commit(journal_t *journal) {
 			0, JBD2_FEATURE_INCOMPAT_ASYNC_COMMIT);
 }
 
-struct timespec current_kernel_time_rs(void)
+struct timespec64 current_kernel_time_rs(void)
 {
-    struct timespec ts;
+    struct timespec64 ts;
     ktime_get_coarse_ts64(&ts);
 	return ts;
 }

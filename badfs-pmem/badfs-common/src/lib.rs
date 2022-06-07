@@ -3,11 +3,9 @@
 #![feature(in_band_lifetimes)]
 #![feature(new_uninit)]
 
-#[cfg(feature = "mimalloc")]
-use mimalloc_rust::*;
-#[cfg(feature = "mimalloc")]
-#[global_allocator]
-static GLOBAL_MIMALLOC: GlobalMiMalloc = GlobalMiMalloc;
+// use CorundumAllocator::*;
+// #[global_allocator]
+// static GLOBAL_CORUNDUM: CorundumAlloc = CorundumAlloc;
 
 pub mod data;
 pub mod distributor;

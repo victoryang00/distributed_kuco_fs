@@ -11,7 +11,7 @@ mimalloc = ["mimalloc-rust"]
 [dependencies]
 badfs-common = { path = "../badfs-common" }
 futures = "0.3"
-ibverbs = {path = "/root/tmp/rust-ibverbs"}
+ibverbs = {path = "/root/tmp/rust-librpma"}
 libc = "0.2.101"
 log = "*"
 env_logger = "*"

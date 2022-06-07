@@ -107,24 +107,45 @@ impl BentoFilesystem<'_,i32,HelloState> for HelloFS {
         outarg.proto_major = BENTO_KERNEL_VERSION;
         outarg.proto_minor = BENTO_KERNEL_MINOR_VERSION;
 
-        let mut max_readahead = u32::MAX;
-        if outarg.max_readahead < max_readahead {
-            max_readahead = outarg.max_readahead;
+        LOGGER_INITED.get_or_init(|| {
+            env_logger::init();
+            info!(
+                "env_logger has initialized.(thread_id: {:?})",
+                std::thread::current().id()
+            );
+        });
+    
+        //create a new client in a really thread-safe way
+        let mut guard = CLIENT.write().unwrap();
+        if let None = *guard {
+            *guard = Some({
+                TOKIO_RUNTIME.with(|tokio| {
+                    tokio.block_on(async {
+                        let client = BadfsClient::new().await.expect("failed to create client");
+                        info!(
+                            "Badfs Client has initialized.(thread_id: {:?})",
+                            std::thread::current().id()
+                        );
+                        client
+                    })
+                })
+            });
         }
-
-        outarg.max_readahead = max_readahead;
-        outarg.max_background = 0;
-        outarg.congestion_threshold = 0;
-        outarg.time_gran = 1;
-
-        if self.disk.is_none() {
-            let devname_str = devname.to_str().unwrap();
-            let disk = RwLock::new(Disk::new(devname_str, 4096));
-            let mut disk_string = devname_str.to_string();
-            disk_string.push('\0');
-            self.diskname = Some(disk_string);
-            self.disk = Some(disk);
+    
+        unsafe {
+            intercept_hook_point = Some(intercept_hook);
+            info!(
+                "intercept_hook_point has been set to our hook.(thread_id: {:?})",
+                std::thread::current().id()
+            );
         }
+        ENABLE_INTERCEPT.with(|f| {
+            info!(
+                "enabled intercept hook for current thread.(thread_id: {:?})",
+                std::thread::current().id()
+            );
+            f.set(true);
+        });
 
         return Ok(());
     }
@@ -234,34 +255,8 @@ impl BentoFilesystem<'_,i32,HelloState> for HelloFS {
         _flags: u32,
         reply: ReplyWrite,
     ) {
-        let total_len = data.len() + offset as usize;
-
-        if nodeid != 2 {
-            reply.error(libc::ENOENT);
-            return;
-        }
-
-        let disk = self.disk.as_ref().unwrap().read().unwrap();
-        let mut bh = match disk.bread(0) {
-            Ok(x) => x,
-            Err(x) => {
-                reply.error(x);
-                return;
-            }
-        };
-        {
-            let b_slice = bh.data_mut();
-            let offset = offset as usize;
-            let copy_size = data.len();
-            let write_region = &mut b_slice[offset..offset + copy_size];
-            let data_region = &data[..copy_size];
-            write_region.copy_from_slice(data_region);
-            LEN.store(total_len, atomic::Ordering::SeqCst);
-        }
-
-        bh.mark_buffer_dirty();
-        bh.sync_dirty_buffer();
-        reply.written(data.len() as u32);
+        
+       Ok(())
     }
 
     #[allow(unused_mut)]

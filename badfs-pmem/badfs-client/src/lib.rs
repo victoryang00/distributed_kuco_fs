@@ -37,8 +37,8 @@ pub struct BadfsConfig {
 impl BadfsConfig {
     fn new() -> Self {
         BadfsConfig {
-            //server_address: vec!["192.168.10.4:3344".into(),"192.168.10.6:3344".into(),"192.168.10.5:3344".into()],
-            server_address: vec!["192.168.10.4:3344".into()],
+            server_address: vec!["192.168.10.4:3344".into(),"0.0.0.0:3345".into()],
+            // server_address: vec!["192.168.10.4:3344".into()],
             // server_address: vec!["localhost:3344".into(), "localhost:3345".into(),"localhost:3346".into()],
             base_path: "/storage/io500-test".to_string(),
         }

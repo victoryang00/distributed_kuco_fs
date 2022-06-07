@@ -329,20 +329,8 @@ extern "C" {
     pub fn current_net() -> *const raw::c_void;
     pub fn kernel_bind(sock: *mut raw::c_void, addr: *const raw::c_void, addrlen: i32) -> i32;
     pub fn kernel_listen(sock: *mut raw::c_void, backlog: i32) -> i32;
-    pub fn kernel_getsockopt(
-        sock: *mut raw::c_void,
-        level: i32,
-        optname: i32,
-        optval: *mut raw::c_char,
-        optlen: *mut i32
-    ) -> i32;
-    pub fn kernel_setsockopt(
-        sock: *mut raw::c_void,
-        level: i32,
-        optname: i32,
-        optval: *const raw::c_char,
-        optlen: u32
-    ) -> i32;
+    pub fn sock_reset_flag(sock: *mut raw::c_void, flags: i32) -> i32;
+    pub fn sock_set_flag(sock: *mut raw::c_void, flags: i32) -> i32;
     pub fn kernel_accept(sock: *mut raw::c_void, newsock: *mut *mut raw::c_void, flags: i32) -> i32;
     pub fn kernel_connect(sock: *mut raw::c_void, sockaddr: *const raw::c_void, addrlen: i32, flags: i32) -> i32;
     pub fn kernel_getpeername(sock: *mut raw::c_void, sockaddr: *mut raw::c_void, addrlen: *mut i32) -> i32;
@@ -377,3 +365,4 @@ extern "C" {
 pub unsafe fn sb_bread(sb: *const raw::c_void, blockno: u64) -> *const raw::c_void {
     rs_sb_bread(sb, blockno)
 }
+
