@@ -3,9 +3,9 @@
 #![feature(in_band_lifetimes)]
 #![feature(new_uninit)]
 
-// use CorundumAllocator::*;
-// #[global_allocator]
-// static GLOBAL_CORUNDUM: CorundumAlloc = CorundumAlloc;
+use CorundumAllocator::*;
+#[global_allocator]
+static GLOBAL_CORUNDUM: CorundumAlloc = CorundumAlloc;
 
 pub mod data;
 pub mod distributor;
